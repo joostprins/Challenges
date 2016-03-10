@@ -1,7 +1,6 @@
 package challenge5.protocol;
 
-import client.*;
-
+import challenge5.client.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DummyRoutingProtocol implements IRoutingProtocol {

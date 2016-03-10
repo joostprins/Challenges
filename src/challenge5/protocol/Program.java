@@ -1,9 +1,9 @@
 package challenge5.protocol;
 
-import client.IRoutingProtocol;
-import client.LinkLayer;
-import client.RoutingChallengeClient;
-import client.RoutingChallengeClient.SimulationState;
+import challenge5.client.IRoutingProtocol;
+import challenge5.client.LinkLayer;
+import challenge5.client.RoutingChallengeClient;
+import challenge5.client.RoutingChallengeClient.SimulationState;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
