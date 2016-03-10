@@ -1,4 +1,4 @@
-package client;
+package challenge5.client;
 
 /**
  * Data packet consisting of source, destination and data

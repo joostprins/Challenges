@@ -1,4 +1,4 @@
-package client;
+package challenge5.client;
 
 public enum TransmissionResult {
     Success,

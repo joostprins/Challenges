@@ -1,4 +1,4 @@
-package protocol;
+package challenge5.protocol;
 
 import client.IRoutingProtocol;
 import client.LinkLayer;
@@ -12,11 +12,11 @@ import java.lang.reflect.InvocationTargetException;
 
 public class Program {
     // Change to your group number (e.g. use a student number)
-    private static int groupId = 1723545;
+    private static int groupId = 0;
 
     // Change to your group password (doesn't matter what it is,
     // as long as everyone in the group uses the same string)
-    private static String password = "DANK_MEMES";
+    private static String password = "changeme0";
 
     // Change to your protocol implementation
     private static Class<? extends IRoutingProtocol> protocolImpl = DummyRoutingProtocol.class;

@@ -1,4 +1,4 @@
-package client;
+package challenge5.client;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;

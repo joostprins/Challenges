@@ -1,4 +1,4 @@
-package client;
+package challenge5.client;
 
 /**
  * Object which describes a route entry in the forwarding table.

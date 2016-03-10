@@ -1,4 +1,4 @@
-package client;
+package challenge5.client;
 
 /**
  * Link layer interface, used for clarity

@@ -1,4 +1,4 @@
-package client;
+package challenge5.client;
 
 import java.util.concurrent.ConcurrentHashMap;
 
