@@ -1,21 +1,24 @@
 package challenge6;
 
 public class PacketFactory {
+
+    private Ipv6Packet ipv6Packet;
+    private TcpPacket tcpPacket;
 	
-	private String sourceAddr;
-	private String destAddr;
-	private int sourcePort;
-	private int destPort;
-	
-	public PacketFactory(String source, String destination, int sourcePort, int destPort) {
-		this.sourceAddr = source;
-		this.destAddr = destination;
-		this.sourcePort = sourcePort;
-		this.destPort = destPort;
+	public PacketFactory(Ipv6Packet ipv6Packet, TcpPacket tcpPacket) {
+        this.ipv6Packet = ipv6Packet;
+        this.tcpPacket = tcpPacket;
 	}
 	
-	public int[] ipv6Packet() {
-		return null;
-		
+	public static int[] toIntArray(Ipv6Packet ipv6Packet, TcpPacket tcpPacket) {
+        int[] ipv6PacketArray = ipv6Packet.toIntArray();
+        int[] tcpPacketarray = tcpPacket.toIntArray();
+
+        int[] packet = new int[ipv6PacketArray.length + tcpPacketarray.length];
+
+        System.arraycopy(ipv6PacketArray, 0, packet, 0, ipv6PacketArray.length);
+        System.arraycopy(tcpPacketarray, 0, packet, ipv6PacketArray.length, tcpPacketarray.length);
+
+        return packet;
 	}
 }

@@ -6,12 +6,16 @@ class MyTcpHandler extends TcpHandler {
 	}
 
     private static final String ipAddr = "2001:067c:2564:a156:7277:81ff:fe01:83f1";
+    private static final int ACK_FLAG = 0x10;
+    private static final int SYN_FLAG = 0x02;
+    private static final int FIN_FLAG = 0x01;
 
 	public MyTcpHandler() {
-		super();
+        super();
 
 		boolean done = false;
 
+        /*
 		int[] txpkt = new int[60];
 
         // IPv6
@@ -21,7 +25,7 @@ class MyTcpHandler extends TcpHandler {
         txpkt[2] = 0x00;    // Flow Label
         txpkt[3] = 0x00;    // Flow Label
         txpkt[4] = 0x00;    // Payload Length
-        txpkt[5] = 0x14;    // Payload Length
+        txpkt[5] = 20;      // Payload Length
         txpkt[6] = 0xfd;    // Next Header
         txpkt[7] = 0x10;    // Hop Limit
 
@@ -65,8 +69,8 @@ class MyTcpHandler extends TcpHandler {
 
         txpkt[40] = 0x04;	// Source Port
         txpkt[41] = 0xd2;   // Source Port
-        txpkt[42] = 0x1e;   // Destination Port
-        txpkt[43] = 0x1f;   // Destination Port
+        txpkt[42] = Integer.parseInt(String.format("%04X", 7711).substring(0,2), 16);
+        txpkt[43] = Integer.parseInt(String.format("%04X", 7711).substring(2), 16);
         txpkt[44] = 0x00;   // Sequence Number
         txpkt[45] = 0x00;   // Sequence Number
         txpkt[46] = 0x00;   // Sequence Number
@@ -84,30 +88,47 @@ class MyTcpHandler extends TcpHandler {
         txpkt[58] = 0x00;   // Urgent Pointer
         txpkt[59] = 0x00;   // Urgent Pointer
 
-        this.sendData(txpkt);
+        this.sendData(txpkt);*/
 
-		while (!done) {
-			// check for reception of a packet, but wait at most 500 ms:
-			int[] rxpkt = this.receiveData(500);
-			if (rxpkt.length==0) {
-				// nothing has been received yet
-				System.out.println("Nothing...");
-				continue;
-			}
+        // Send SYN packet.
+        Ipv6Packet ipv6Packet = new Ipv6Packet();
+        TcpPacket tcpPacket = new TcpPacket(0, 0, 0, 0, 0, 0, 0, 0, SYN_FLAG);
+        ipv6Packet.setPayloadLength(20);
+        tcpPacket.setOffset(0x50);
 
-			// something has been received
-			int len=rxpkt.length;
+        this.sendData(PacketFactory.toIntArray(ipv6Packet, tcpPacket));
 
-			// print the received bytes:
-			int i;
-			System.out.print("Received " + len + " bytes: ");
-			for (i=0;i<len;i++) {
-                if (rxpkt[52] == 96 && rxpkt[53] == 18) {
-                    // SYN/ACK Flags set.
-                }
-                System.out.print(Integer.toHexString(rxpkt[i]) + " ");
-            }
-			System.out.println("");
-		}   
+        int[] rxpkt = this.receiveData(500);
+
+        // Ack the SYN/ACK packet.
+        ipv6Packet = new Ipv6Packet();
+        tcpPacket = new TcpPacket(0, 0, 0, 1, rxpkt[44], rxpkt[45], rxpkt[46], rxpkt[47] + 1, ACK_FLAG);
+        ipv6Packet.setPayloadLength(20);
+        tcpPacket.setOffset(0x50);
+
+        this.sendData(PacketFactory.toIntArray(ipv6Packet, tcpPacket));
+
+        rxpkt = this.receiveData(500);
+
+        // Send the GET request.
+        ipv6Packet = new Ipv6Packet();
+        tcpPacket = new TcpPacket(0, 0, 0, 1, rxpkt[44], rxpkt[45], rxpkt[46], rxpkt[47] + 1, ACK_FLAG);
+        ipv6Packet.setPayloadLength(20);
+        tcpPacket.setOffset(0x50);
+
+        this.sendData(PacketFactory.toIntArray(ipv6Packet, tcpPacket));
+
+        rxpkt = this.receiveData(500);
+
+        // Send FIN packet.
+        ipv6Packet = new Ipv6Packet();
+        tcpPacket = new TcpPacket(0, 0, 0, 2, 0, 0, 0, 0, FIN_FLAG);
+        ipv6Packet.setPayloadLength(20);
+        tcpPacket.setOffset(0x50);
+
+        this.sendData(PacketFactory.toIntArray(ipv6Packet, tcpPacket));
+
+        rxpkt = this.receiveData(500);
+
 	}
 }
