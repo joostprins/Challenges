@@ -32,8 +32,8 @@ public class TcpPacket {
     public int[] toIntArray() {
         int[] packet = new int[20];
 
-        packet[0] = 0x04;	// Source Port
-        packet[1] = 0xd5;   // Source Port
+        packet[0] = 0x25;	// Source Port
+        packet[1] = 0xb5;   // Source Port
         packet[2] = 0x1e;   // Destination Port
         packet[3] = 0x1f;   // Destination Port
         packet[4] = seq1;   // Sequence Number

@@ -10,14 +10,11 @@ public class PacketFactory {
         this.tcpPacket = tcpPacket;
 	}
 	
-	public static int[] toIntArray(Ipv6Packet ipv6Packet, TcpPacket tcpPacket) {
-        int[] ipv6PacketArray = ipv6Packet.toIntArray();
-        int[] tcpPacketarray = tcpPacket.toIntArray();
+	public static int[] toIntArray(int[] firstPacket, int[] secondPacket) {
+        int[] packet = new int[firstPacket.length + secondPacket.length];
 
-        int[] packet = new int[ipv6PacketArray.length + tcpPacketarray.length];
-
-        System.arraycopy(ipv6PacketArray, 0, packet, 0, ipv6PacketArray.length);
-        System.arraycopy(tcpPacketarray, 0, packet, ipv6PacketArray.length, tcpPacketarray.length);
+        System.arraycopy(firstPacket, 0, packet, 0, firstPacket.length);
+        System.arraycopy(secondPacket, 0, packet, firstPacket.length, secondPacket.length);
 
         return packet;
 	}
