@@ -7,46 +7,73 @@ import challenge7.wlanscanner.src.Utils.Utils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.OptionalDouble;
 
 public class CustomLocationFinder implements LocationFinder {
 
-    private static final double EPSILON = 3;
-
+    private static final double EPSILON = 10;
+    private double x1;
+    private double y1;
+    private HashMap<String, ArrayList<Integer>> values = new HashMap<>(); 
     private HashMap<String, Position> knownLocations; //Contains the known locations of APs. The long is a MAC address.
-
+    
     public CustomLocationFinder(){
         knownLocations = Utils.getKnownLocations(); //Put the known locations in our hashMap
     }
+    
 
     @Override
     public Position locate(MacRssiPair[] data) {
+    	System.out.println(values.toString());
         List<MacRssiPair> accessPoints = new ArrayList<>();
-        for (MacRssiPair pair : data) {
+		for (MacRssiPair pair : data) {
             if(knownLocations.containsKey(pair.getMacAsString())) {
                 accessPoints.add(pair);
             }
         }
+		
+		for (MacRssiPair p : accessPoints) {
+			if (!values.containsKey(p.getMacAsString())) {
+				values.put(p.getMacAsString(), new ArrayList<Integer>());
+				values.get(p.getMacAsString()).add(p.getRssi());
+			} else {
+				values.get(p.getMacAsString()).add(p.getRssi());
+			}
+		}
+		boolean filled = true;
+		for (String s : values.keySet()) {
+			if (values.get(s).size() < 10) {
+				filled = false;
+			}
+		}
+		
+		if (filled) {
+			if (accessPoints.size() == 3) {
+	            double x1 = knownLocations.get(accessPoints.get(0).getMacAsString()).getX();
+	            double y1 = knownLocations.get(accessPoints.get(0).getMacAsString()).getY();
+	            OptionalDouble rssi1 = values.get(accessPoints.get(0)).stream().mapToDouble(a -> a).average();
+	            double r1 = getDistance((int) rssi1.getAsDouble());
+	            System.out.println("X1: " + x1 + " - Y1: " + y1 + " - R1: " + r1 + " (RSSI: " + accessPoints.get(0).getRssi() + ")");
+	            double x2 = knownLocations.get(accessPoints.get(1).getMacAsString()).getX();
+	            double y2 = knownLocations.get(accessPoints.get(1).getMacAsString()).getY();
+	            OptionalDouble rssi2 = values.get(accessPoints.get(1)).stream().mapToDouble(a -> a).average();
+	            double r2 = getDistance((int) rssi2.getAsDouble());
+	            System.out.println("X2: " + x2 + " - Y2: " + y2 + " - R2: " + r2 + " (RSSI: " + accessPoints.get(1).getRssi() + ")");
+	            double x3 = knownLocations.get(accessPoints.get(2).getMacAsString()).getX();
+	            double y3 = knownLocations.get(accessPoints.get(2).getMacAsString()).getY();
+	            OptionalDouble rssi3 = values.get(accessPoints.get(2)).stream().mapToDouble(a -> a).average();
+	            double r3 = getDistance((int) rssi3.getAsDouble());
+	            System.out.println("X3: " + x3 + " - Y3: " + y3 + " - R3: " + r3 + " (RSSI: " + accessPoints.get(2).getRssi() + ")");
+	            calculateThreeCircleIntersection(x1, y1, r1, x2, y2, r2, x3, y3, r3);
+	        } else {
+	            System.out.println("Less / more than 3 APs.");
+	        }
 
-        if (accessPoints.size() == 3) {
-            double x1 = knownLocations.get(accessPoints.get(0).getMacAsString()).getX();
-            double y1 = knownLocations.get(accessPoints.get(0).getMacAsString()).getY();
-            double r1 = getDistance(accessPoints.get(0).getRssi());
-            System.out.println("X1: " + x1 + " - Y1: " + y1 + " - R1: " + r1 + " (RSSI: " + accessPoints.get(0).getRssi() + ")");
-            double x2 = knownLocations.get(accessPoints.get(1).getMacAsString()).getX();
-            double y2 = knownLocations.get(accessPoints.get(1).getMacAsString()).getY();
-            double r2 = getDistance(accessPoints.get(1).getRssi());
-            System.out.println("X2: " + x2 + " - Y2: " + y2 + " - R2: " + r2 + " (RSSI: " + accessPoints.get(1).getRssi() + ")");
-            double x3 = knownLocations.get(accessPoints.get(2).getMacAsString()).getX();
-            double y3 = knownLocations.get(accessPoints.get(2).getMacAsString()).getY();
-            double r3 = getDistance(accessPoints.get(2).getRssi());
-            System.out.println("X3: " + x3 + " - Y3: " + y3 + " - R3: " + r3 + " (RSSI: " + accessPoints.get(2).getRssi() + ")");
-            calculateThreeCircleIntersection(x1, y1, r1, x2, y2, r2, x3, y3, r3);
-        } else {
-            System.out.println("Less / more than 3 APs.");
-        }
-
-        //printMacs(data); //print all the received data
-        return getFirstKnownFromList(data); //return the first known APs location
+	        System.out.println("VOOR DE RETURN: " + x1 + "," + y1);
+	        values.clear();
+	        //printMacs(data); //print all the received data
+	       	}
+		 return new Position(x1, y1); //return the first known APs location
     }
 
     /**
@@ -162,9 +189,16 @@ public class CustomLocationFinder implements LocationFinder {
 
         if(Math.abs(d1 - r2) < EPSILON) {
             System.out.println("INTERSECTION Circle1 AND Circle2 AND Circle3: (" + intersectionPoint1_x + "," + intersectionPoint1_y + ")");
+            this.x1 = intersectionPoint1_x;
+            this.y1 = intersectionPoint1_y;
+            System.out.println("DAFUQ: " + x1 + "," + y1);
         }
         else if(Math.abs(d2 - r2) < EPSILON) {
             System.out.println("INTERSECTION Circle1 AND Circle2 AND Circle3: (" + intersectionPoint2_x + "," + intersectionPoint2_y + ")"); //here was an error
+            this.x1 = intersectionPoint2_x;
+            this.y1 = intersectionPoint2_y;
+
+            System.out.println("DAFUQ2: " + x1 + "," + y1);
         }
         else {
             System.out.println("INTERSECTION Circle1 AND Circle2 AND Circle3: NONE");
