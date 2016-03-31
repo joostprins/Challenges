@@ -11,7 +11,7 @@ import java.util.OptionalDouble;
 
 public class CustomLocationFinder implements LocationFinder {
 
-    private static final double EPSILON = 10;
+    private static final double EPSILON = 5;
     private double x1;
     private double y1;
     private HashMap<String, ArrayList<Integer>> values = new HashMap<>(); 
@@ -51,17 +51,17 @@ public class CustomLocationFinder implements LocationFinder {
 			if (accessPoints.size() == 3) {
 	            double x1 = knownLocations.get(accessPoints.get(0).getMacAsString()).getX();
 	            double y1 = knownLocations.get(accessPoints.get(0).getMacAsString()).getY();
-	            OptionalDouble rssi1 = values.get(accessPoints.get(0)).stream().mapToDouble(a -> a).average();
+	            OptionalDouble rssi1 = values.get(accessPoints.get(0).getMacAsString()).stream().mapToDouble(a -> a).average();
 	            double r1 = getDistance((int) rssi1.getAsDouble());
 	            System.out.println("X1: " + x1 + " - Y1: " + y1 + " - R1: " + r1 + " (RSSI: " + accessPoints.get(0).getRssi() + ")");
 	            double x2 = knownLocations.get(accessPoints.get(1).getMacAsString()).getX();
 	            double y2 = knownLocations.get(accessPoints.get(1).getMacAsString()).getY();
-	            OptionalDouble rssi2 = values.get(accessPoints.get(1)).stream().mapToDouble(a -> a).average();
+	            OptionalDouble rssi2 = values.get(accessPoints.get(1).getMacAsString()).stream().mapToDouble(a -> a).average();
 	            double r2 = getDistance((int) rssi2.getAsDouble());
 	            System.out.println("X2: " + x2 + " - Y2: " + y2 + " - R2: " + r2 + " (RSSI: " + accessPoints.get(1).getRssi() + ")");
 	            double x3 = knownLocations.get(accessPoints.get(2).getMacAsString()).getX();
 	            double y3 = knownLocations.get(accessPoints.get(2).getMacAsString()).getY();
-	            OptionalDouble rssi3 = values.get(accessPoints.get(2)).stream().mapToDouble(a -> a).average();
+	            OptionalDouble rssi3 = values.get(accessPoints.get(2).getMacAsString()).stream().mapToDouble(a -> a).average();
 	            double r3 = getDistance((int) rssi3.getAsDouble());
 	            System.out.println("X3: " + x3 + " - Y3: " + y3 + " - R3: " + r3 + " (RSSI: " + accessPoints.get(2).getRssi() + ")");
 	            calculateThreeCircleIntersection(x1, y1, r1, x2, y2, r2, x3, y3, r3);
@@ -70,7 +70,6 @@ public class CustomLocationFinder implements LocationFinder {
 	        }
 
 	        System.out.println("VOOR DE RETURN: " + x1 + "," + y1);
-	        values.clear();
 	        //printMacs(data); //print all the received data
 	       	}
 		 return new Position(x1, y1); //return the first known APs location
@@ -192,6 +191,8 @@ public class CustomLocationFinder implements LocationFinder {
             this.x1 = intersectionPoint1_x;
             this.y1 = intersectionPoint1_y;
             System.out.println("DAFUQ: " + x1 + "," + y1);
+
+	        values.clear();
         }
         else if(Math.abs(d2 - r2) < EPSILON) {
             System.out.println("INTERSECTION Circle1 AND Circle2 AND Circle3: (" + intersectionPoint2_x + "," + intersectionPoint2_y + ")"); //here was an error
@@ -199,6 +200,8 @@ public class CustomLocationFinder implements LocationFinder {
             this.y1 = intersectionPoint2_y;
 
             System.out.println("DAFUQ2: " + x1 + "," + y1);
+
+	        values.clear();
         }
         else {
             System.out.println("INTERSECTION Circle1 AND Circle2 AND Circle3: NONE");
