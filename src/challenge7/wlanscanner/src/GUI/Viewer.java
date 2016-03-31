@@ -39,9 +39,9 @@ public class Viewer implements Runnable {
 		Image backup;
 		Image point;
 		try {
-			image = ImageIO.read(new File("horst.png")); //ImageIO.read(new File("spiegel_beter.png"));
-			backup = ImageIO.read(new File("horst.png")); //ImageIO.read(new File("spiegel_beter.png"));
-			point = ImageIO.read(new File("point.png"));
+			image = ImageIO.read(new File("../horst.png")); //ImageIO.read(new File("spiegel_beter.png"));
+			backup = ImageIO.read(new File("../horst.png")); //ImageIO.read(new File("spiegel_beter.png"));
+			point = ImageIO.read(new File("../point.png"));
 			JLabel label = new JLabel(new ImageIcon(image));
 			JPanel panel = new JPanel(new BorderLayout());
 			panel.add(label);

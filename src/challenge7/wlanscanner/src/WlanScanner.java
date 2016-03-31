@@ -3,6 +3,7 @@ package challenge7.wlanscanner.src;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import challenge7.wlanscanner.src.GUI.Viewer;
+import challenge7.wlanscanner.src.Location.CustomLocationFinder;
 import challenge7.wlanscanner.src.Location.LocationFinder;
 import challenge7.wlanscanner.src.Location.SimpleLocationFinder;
 import challenge7.wlanscanner.src.Network.DataReceiver;
@@ -26,13 +27,13 @@ public class WlanScanner {
 	public static String webSenderTarget = "netsys.ewi.utwente.nl";
 	
 	//Your group name on the website, don't forget to change this!
-	public static String name = "Change me!";
+	public static String name = "Croki";
 	
 	//Controls if the position is send to the server for viewing on the website.
 	public static boolean sendToWebsite = true;
 	
 	//The LocationFinder that is to be used. Replace this with your own implementation!
-	public LocationFinder locationHandler = new SimpleLocationFinder();
+	public LocationFinder locationHandler = new CustomLocationFinder();
 	
 	///////////// Do not edit below this line! ////////////////
 	
