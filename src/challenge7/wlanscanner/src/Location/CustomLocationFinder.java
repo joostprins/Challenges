@@ -10,7 +10,6 @@ import java.util.List;
 
 public class CustomLocationFinder implements LocationFinder {
 
-    private static final double EPSILON = 10;
     private double x;
     private double y;
 
@@ -41,10 +40,20 @@ public class CustomLocationFinder implements LocationFinder {
             double r2 = getDistance(accessPoints.get(1).getRssi());
             System.out.println("X2: " + x2 + " - Y2: " + y2 + " - R2: " + r2 + " (RSSI: " + accessPoints.get(1).getRssi() + ")");
 
-            if (accessPoints.get(2).getRssi() > -50) {
-                return calculateIntersection(x1, y1, r1, x2, y2, r2)[0];
+            Position[] intersections = calculateIntersection(x1, y1, r1, x2, y2, r2);
+            for (Position p : intersections) {
+            	if (Double.isNaN(p.getX())) {
+            		return new Position(x, y);
+            	}
+            }
+            if (accessPoints.get(2).getRssi() < -50) {
+            	this.x = intersections[0].getX();
+            	this.y = intersections[0].getY();
+                return intersections[0];
             } else {
-                return calculateIntersection(x1, y1, r1, x2, y2, r2)[1];
+            	this.x = intersections[0].getX();
+            	this.y = intersections[0].getY();
+                return intersections[1];
             }
 
         } else {
@@ -100,8 +109,6 @@ public class CustomLocationFinder implements LocationFinder {
         double intersectionPoint2_x = point2_x - rx;
         double intersectionPoint1_y = point2_y + ry;
         double intersectionPoint2_y = point2_y - ry;
-
-        System.out.println("INTERSECTION Circle1 AND Circle2: (" + intersectionPoint1_x + "," + intersectionPoint1_y + ")" + " AND (" + intersectionPoint2_x + "," + intersectionPoint2_y + ")");
 
         if (intersectionPoint1_y > intersectionPoint2_y) {
             return new Position[]{new Position(intersectionPoint1_x, intersectionPoint1_y), new Position(intersectionPoint2_x, intersectionPoint2_y)};
