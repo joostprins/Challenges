@@ -1,1 +1,8 @@
 /bin/
+.idea
+.settings
+/out/
+.classpath
+.project
+Challenges.iml
+
