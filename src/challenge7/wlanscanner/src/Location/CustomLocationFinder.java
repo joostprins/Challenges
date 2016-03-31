@@ -31,12 +31,15 @@ public class CustomLocationFinder implements LocationFinder {
             double x1 = knownLocations.get(accessPoints.get(0).getMacAsString()).getX();
             double y1 = knownLocations.get(accessPoints.get(0).getMacAsString()).getY();
             double r1 = getDistance(accessPoints.get(0).getRssi());
+            System.out.println("X1: " + x1 + " - Y1: " + y1 + " - R1" + r1);
             double x2 = knownLocations.get(accessPoints.get(1).getMacAsString()).getX();
             double y2 = knownLocations.get(accessPoints.get(1).getMacAsString()).getY();
             double r2 = getDistance(accessPoints.get(1).getRssi());
+            System.out.println("X2: " + x2 + " - Y2: " + y2 + " - R2" + r2);
             double x3 = knownLocations.get(accessPoints.get(2).getMacAsString()).getX();
             double y3 = knownLocations.get(accessPoints.get(2).getMacAsString()).getY();
             double r3 = getDistance(accessPoints.get(2).getRssi());
+            System.out.println("X3: " + x3 + " - Y3: " + y3 + " - R3" + r3);
             calculateThreeCircleIntersection(x1, y1, r1, x2, y2, r2, x3, y3, r3);
         } else {
             System.out.println("Less / more than 3 APs.");
@@ -56,7 +59,6 @@ public class CustomLocationFinder implements LocationFinder {
         for(int i=0; i<data.length; i++){
             if(knownLocations.containsKey(data[i].getMacAsString())){
                 ret = knownLocations.get(data[i].getMacAsString());
-                System.out.println("AP X: " + ret.getX() + " - AP Y:" + ret.getY() + " -  AP D:" + getDistance(getAverageRssi(data)));
             }
         }
         return ret;
