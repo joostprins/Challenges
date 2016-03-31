@@ -5,7 +5,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import challenge7.wlanscanner.src.GUI.Viewer;
 import challenge7.wlanscanner.src.Location.CustomLocationFinder;
 import challenge7.wlanscanner.src.Location.LocationFinder;
-import challenge7.wlanscanner.src.Location.SimpleLocationFinder;
 import challenge7.wlanscanner.src.Network.DataReceiver;
 import challenge7.wlanscanner.src.Network.WebSender;
 import challenge7.wlanscanner.src.Utils.MacRssiPair;

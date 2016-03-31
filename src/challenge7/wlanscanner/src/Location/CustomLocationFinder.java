@@ -10,7 +10,7 @@ import java.util.List;
 
 public class CustomLocationFinder implements LocationFinder {
 
-    private static final double EPSILON = 0.0000001;
+    private static final double EPSILON = 3;
 
     private HashMap<String, Position> knownLocations; //Contains the known locations of APs. The long is a MAC address.
 
@@ -31,15 +31,15 @@ public class CustomLocationFinder implements LocationFinder {
             double x1 = knownLocations.get(accessPoints.get(0).getMacAsString()).getX();
             double y1 = knownLocations.get(accessPoints.get(0).getMacAsString()).getY();
             double r1 = getDistance(accessPoints.get(0).getRssi());
-            System.out.println("X1: " + x1 + " - Y1: " + y1 + " - R1" + r1);
+            System.out.println("X1: " + x1 + " - Y1: " + y1 + " - R1: " + r1 + " (RSSI: " + accessPoints.get(0).getRssi() + ")");
             double x2 = knownLocations.get(accessPoints.get(1).getMacAsString()).getX();
             double y2 = knownLocations.get(accessPoints.get(1).getMacAsString()).getY();
             double r2 = getDistance(accessPoints.get(1).getRssi());
-            System.out.println("X2: " + x2 + " - Y2: " + y2 + " - R2" + r2);
+            System.out.println("X2: " + x2 + " - Y2: " + y2 + " - R2: " + r2 + " (RSSI: " + accessPoints.get(1).getRssi() + ")");
             double x3 = knownLocations.get(accessPoints.get(2).getMacAsString()).getX();
             double y3 = knownLocations.get(accessPoints.get(2).getMacAsString()).getY();
             double r3 = getDistance(accessPoints.get(2).getRssi());
-            System.out.println("X3: " + x3 + " - Y3: " + y3 + " - R3" + r3);
+            System.out.println("X3: " + x3 + " - Y3: " + y3 + " - R3: " + r3 + " (RSSI: " + accessPoints.get(2).getRssi() + ")");
             calculateThreeCircleIntersection(x1, y1, r1, x2, y2, r2, x3, y3, r3);
         } else {
             System.out.println("Less / more than 3 APs.");
@@ -58,6 +58,7 @@ public class CustomLocationFinder implements LocationFinder {
         Position ret = new Position(0,0);
         for(int i=0; i<data.length; i++){
             if(knownLocations.containsKey(data[i].getMacAsString())){
+                getDistance(data[i].getRssi());
                 ret = knownLocations.get(data[i].getMacAsString());
             }
         }
@@ -90,7 +91,8 @@ public class CustomLocationFinder implements LocationFinder {
     }
 
     public double getDistance(int rssi) {
-        return Math.pow(2.71828182845905, (1.0-rssi)/20);
+        double power = ((1d-rssi)/20d);
+        return Math.pow(2.71828182845905d, power);
     }
 
     private boolean calculateThreeCircleIntersection(double x0, double y0, double r0, double x1, double y1, double r1, double x2, double y2, double r2) {
